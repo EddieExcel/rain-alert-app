@@ -3,6 +3,7 @@
     "@react-native-async-storage/async-storage": "latest",
     "expo": "latest",
     "expo-background-fetch": "latest",
+    "expo-constants": "57.0.20",
     "expo-location": "latest",
     "expo-notifications": "latest",
     "expo-speech": "latest",

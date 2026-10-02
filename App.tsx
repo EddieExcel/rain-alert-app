@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+import Constants from "expo-constants";
 import * as Location from "expo-location";
 import * as Speech from "expo-speech";
 import {
@@ -140,6 +141,9 @@ export default function App() {
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.body}>
         <Text style={styles.title}>Rain Alert</Text>
+        <Text style={styles.version}>
+          v{Constants.nativeAppVersion} (build {Constants.nativeBuildVersion})
+        </Text>
         <Text style={styles.sub}>
           Speaks when rain starts and stops at your location.
         </Text>
@@ -214,6 +218,7 @@ const styles = StyleSheet.create({
   },
   body: { padding: 20, gap: 14 },
   title: { color: "#fff", fontSize: 28, fontWeight: "700" },
+  version: { color: "#5b7186", fontSize: 13 },
   sub: { color: "#9fb3c8", fontSize: 14 },
   error: { color: "#ff8a80", fontSize: 14 },
   card: {
