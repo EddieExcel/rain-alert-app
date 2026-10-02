@@ -84,13 +84,14 @@ export default function App() {
     setBusy(true);
     setNotice(null);
     try {
+      // checkWeatherOnce fires the spoken alert itself via notifyRainStarted/
+      // notifyRainStopped when a rain event occurs — no extra Speech.speak
+      // here or it would say everything twice.
       const event = await checkWeatherOnce();
       await refresh();
       if (event === "rain_started") {
-        Speech.speak("It is raining.");
         setNotice("Rain started — alert spoken.");
       } else if (event === "rain_stopped") {
-        Speech.speak("It has stopped raining.");
         setNotice("Rain stopped — alert spoken.");
       } else {
         setNotice("Checked — no change.");
