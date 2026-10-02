@@ -10,7 +10,8 @@ import {
   View,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import Constants from "expo-constants";
+import * as Application from "expo-application";
+import * as Notifications from "expo-notifications";
 import * as Location from "expo-location";
 import * as Speech from "expo-speech";
 import {
@@ -54,6 +55,7 @@ export default function App() {
   const [home, setHome] = useState<HomeCoords>(DEFAULT_HOME);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [channels, setChannels] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     setEngine(await loadEngine());
@@ -127,6 +129,25 @@ export default function App() {
     }
   }, []);
 
+  const onVoiceTest = useCallback(() => {
+    Speech.speak("It is raining.");
+  }, []);
+
+  const onCheckChannels = useCallback(async () => {
+    try {
+      const list = await Notifications.getNotificationChannelsAsync();
+      if (list.length === 0) {
+        setChannels("No notification channels found.");
+      } else {
+        setChannels(
+          list.map((c) => `${c.id}: sound=${c.sound}`).join("\n")
+        );
+      }
+    } catch (e: any) {
+      setChannels(`error: ${String(e?.message ?? e)}`);
+    }
+  }, []);
+
   if (!ready) {
     return (
       <SafeAreaView style={styles.center}>
@@ -142,7 +163,8 @@ export default function App() {
       <ScrollView contentContainerStyle={styles.body}>
         <Text style={styles.title}>Rain Alert</Text>
         <Text style={styles.version}>
-          v{Constants.nativeAppVersion} (build {Constants.nativeBuildVersion})
+          v{Application.nativeApplicationVersion ?? "?"} (build{" "}
+          {Application.nativeBuildVersion ?? "?"})
         </Text>
         <Text style={styles.sub}>
           Speaks when rain starts and stops at your location.
@@ -191,6 +213,20 @@ export default function App() {
             <Text style={styles.buttonText}>Rain stopped</Text>
           </TouchableOpacity>
         </View>
+
+        <Text style={styles.section}>Diagnostics</Text>
+        <View style={styles.testRow}>
+          <TouchableOpacity style={styles.testButton} onPress={onVoiceTest}>
+            <Text style={styles.buttonText}>Voice test</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.testButton}
+            onPress={onCheckChannels}
+          >
+            <Text style={styles.buttonText}>Check channels</Text>
+          </TouchableOpacity>
+        </View>
+        {channels ? <Text style={styles.dim}>{channels}</Text> : null}
 
         <TouchableOpacity style={styles.linkButton} onPress={onSetHome}>
           <Text style={styles.linkText}>Save current position as home</Text>

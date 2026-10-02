@@ -14,7 +14,7 @@
         "VIBRATE",
         "POST_NOTIFICATIONS"
       ],
-      "versionCode": 4
+      "versionCode": 5
     },
     "assetBundlePatterns": [
       "**/*"
@@ -58,6 +58,6 @@
       "resizeMode": "contain"
     },
     "userInterfaceStyle": "light",
-    "version": "0.1.3"
+    "version": "0.1.4"
   }
 }
