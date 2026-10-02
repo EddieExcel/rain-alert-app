@@ -84,10 +84,10 @@ export default function App() {
       const event = await checkWeatherOnce();
       await refresh();
       if (event === "rain_started") {
-        Speech.speak("Rain has started.");
+        Speech.speak("It is raining.");
         setNotice("Rain started — alert spoken.");
       } else if (event === "rain_stopped") {
-        Speech.speak("The rain has stopped.");
+        Speech.speak("It has stopped raining.");
         setNotice("Rain stopped — alert spoken.");
       } else {
         setNotice("Checked — no change.");

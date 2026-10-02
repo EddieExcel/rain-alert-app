@@ -53,16 +53,16 @@ async function notifySpoken(
 
 export async function notifyRainStarted(): Promise<void> {
   await notifySpoken(
-    "Rain has started",
-    "It's raining at your location.",
+    "It is raining",
+    "It is raining at your location.",
     "rain_started"
   );
 }
 
 export async function notifyRainStopped(): Promise<void> {
   await notifySpoken(
-    "Rain has stopped",
-    "The rain has stopped at your location.",
+    "It has stopped raining",
+    "It has stopped raining at your location.",
     "rain_stopped"
   );
 }
