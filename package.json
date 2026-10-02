@@ -1,1 +1,27 @@
-{"dependencies":{"@react-native-async-storage/async-storage":"latest","expo":"latest","expo-background-fetch":"latest","expo-location":"latest","expo-notifications":"latest","expo-speech":"latest","expo-status-bar":"latest","expo-task-manager":"latest","react":"latest","react-native":"latest"},"devDependencies":{"@types/react":"latest","typescript":"latest"},"main":"index.js","name":"rain-alert-app","private":true,"scripts":{"android":"expo run:android","start":"expo start","typecheck":"tsc --noEmit"},"version":"0.1.0"}
+{
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "latest",
+    "expo": "latest",
+    "expo-background-fetch": "latest",
+    "expo-location": "latest",
+    "expo-notifications": "latest",
+    "expo-speech": "latest",
+    "expo-status-bar": "latest",
+    "expo-task-manager": "latest",
+    "react": "19.2.3",
+    "react-native": "0.86.3"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "typescript": "latest"
+  },
+  "main": "index.js",
+  "name": "rain-alert-app",
+  "private": true,
+  "scripts": {
+    "android": "expo run:android",
+    "start": "expo start",
+    "typecheck": "tsc --noEmit"
+  },
+  "version": "0.1.0"
+}
