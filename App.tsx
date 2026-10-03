@@ -11,14 +11,10 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as Application from "expo-application";
-import * as Notifications from "expo-notifications";
 import * as Location from "expo-location";
-import * as Speech from "expo-speech";
 import {
   ensureNotificationPermission,
   setupAndroidChannel,
-  notifyRainStarted,
-  notifyRainStopped,
 } from "./src/notifications";
 import { checkWeatherOnce, registerWatchdog } from "./src/watchdog";
 import { EngineState, INITIAL_ENGINE_STATE } from "./src/engine";
@@ -55,7 +51,6 @@ export default function App() {
   const [home, setHome] = useState<HomeCoords>(DEFAULT_HOME);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
-  const [channels, setChannels] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     setEngine(await loadEngine());
@@ -130,25 +125,6 @@ export default function App() {
     }
   }, []);
 
-  const onVoiceTest = useCallback(() => {
-    Speech.speak("It is raining.");
-  }, []);
-
-  const onCheckChannels = useCallback(async () => {
-    try {
-      const list = await Notifications.getNotificationChannelsAsync();
-      if (list.length === 0) {
-        setChannels("No notification channels found.");
-      } else {
-        setChannels(
-          list.map((c) => `${c.id}: sound=${c.sound}`).join("\n")
-        );
-      }
-    } catch (e: any) {
-      setChannels(`error: ${String(e?.message ?? e)}`);
-    }
-  }, []);
-
   if (!ready) {
     return (
       <SafeAreaView style={styles.center}>
@@ -198,36 +174,6 @@ export default function App() {
             {busy ? "Checking…" : "Check now"}
           </Text>
         </TouchableOpacity>
-
-        <Text style={styles.section}>Hear what the alerts sound like</Text>
-        <View style={styles.testRow}>
-          <TouchableOpacity
-            style={styles.testButton}
-            onPress={() => notifyRainStarted()}
-          >
-            <Text style={styles.buttonText}>Rain started</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.testButton}
-            onPress={() => notifyRainStopped()}
-          >
-            <Text style={styles.buttonText}>Rain stopped</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.section}>Diagnostics</Text>
-        <View style={styles.testRow}>
-          <TouchableOpacity style={styles.testButton} onPress={onVoiceTest}>
-            <Text style={styles.buttonText}>Voice test</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.testButton}
-            onPress={onCheckChannels}
-          >
-            <Text style={styles.buttonText}>Check channels</Text>
-          </TouchableOpacity>
-        </View>
-        {channels ? <Text style={styles.dim}>{channels}</Text> : null}
 
         <TouchableOpacity style={styles.linkButton} onPress={onSetHome}>
           <Text style={styles.linkText}>Save current position as home</Text>
@@ -284,15 +230,6 @@ const styles = StyleSheet.create({
   },
   buttonDim: { opacity: 0.6 },
   buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
-  section: { color: "#9fb3c8", fontSize: 14, marginTop: 6 },
-  testRow: { flexDirection: "row", gap: 10 },
-  testButton: {
-    flex: 1,
-    backgroundColor: "#1c4d2e",
-    borderRadius: 12,
-    padding: 14,
-    alignItems: "center",
-  },
   linkButton: { padding: 10, alignItems: "center" },
   linkText: { color: "#2f81f7", fontSize: 14 },
   notice: { color: "#ffd479", fontSize: 14, textAlign: "center" },
