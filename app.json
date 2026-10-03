@@ -14,7 +14,7 @@
         "VIBRATE",
         "POST_NOTIFICATIONS"
       ],
-      "versionCode": 7
+      "versionCode": 8
     },
     "assetBundlePatterns": [
       "**/*"
@@ -49,7 +49,8 @@
         }
       ],
       "./plugins/withRainSounds",
-      "./plugins/withReleaseSigning"
+      "./plugins/withReleaseSigning",
+      "./plugins/withDynamicAppIcon"
     ],
     "slug": "rain-alert",
     "splash": {
@@ -58,6 +59,6 @@
       "resizeMode": "contain"
     },
     "userInterfaceStyle": "light",
-    "version": "0.1.6"
+    "version": "0.1.7"
   }
 }

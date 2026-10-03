@@ -179,10 +179,21 @@ function withAppIconPackage(config) {
   return withMainApplication(config, async (config) => {
     let src = config.modResults.contents;
     if (src.includes("AppIconPackage()")) return config; // already patched
-    const anchor = "// packages.add(MyReactNativePackage())";
-    if (src.includes(anchor)) {
-      src = src.replace(anchor, "packages.add(AppIconPackage())");
-    } else {
+    // SDK 57 template: PackageList(this).packages.apply { // add(MyReactNativePackage()) }
+    const anchors = [
+      "// add(MyReactNativePackage())",
+      "// packages.add(MyReactNativePackage())",
+    ];
+    let patched = false;
+    for (const anchor of anchors) {
+      if (src.includes(anchor)) {
+        // Replace the commented example with a live registration call.
+        src = src.replace(anchor, "add(AppIconPackage())");
+        patched = true;
+        break;
+      }
+    }
+    if (!patched) {
       // Fallback: append after the autolinked package list is built.
       const alt = "val packages = PackageList(this).packages";
       if (src.includes(alt)) {
@@ -190,6 +201,7 @@ function withAppIconPackage(config) {
           alt,
           `${alt}\n    packages.add(AppIconPackage())`
         );
+        patched = true;
       }
     }
     config.modResults.contents = src;

@@ -3,11 +3,11 @@
  *
  * A BackgroundFetch task fires about every 15 minutes (OS-enforced minimum
  * on Android), checks Open-Meteo at the device's location, runs the
- * transition engine, and fires a spoken notification on rain start/stop.
+ * transition engine, and fires a spoken alert on rain start/stop.
  *
- * The spoken alert is a pre-recorded voice line played as the
- * notification's custom sound, so it talks even with the screen off.
- * expo-speech is NOT used here — it is unreliable from background tasks.
+ * The spoken alert goes through expo-speech (TTS) plus a banner/vibration
+ * notification, so it talks even with the screen off. The launcher icon is
+ * also kept in sync with the sky (sun / cloud / rain) via activity aliases.
  *
  * NOTE: background fetch requires a dev build
  * (`npx expo run:android`); Expo Go throttles background tasks.
@@ -24,6 +24,7 @@ import {
   saveEngine,
 } from "./storage";
 import { notifyRainStarted, notifyRainStopped } from "./notifications";
+import { setAppIcon, iconForWeatherCode } from "./appIcon";
 
 export const RAIN_TASK = "rainalert-weather-check";
 
@@ -45,6 +46,10 @@ export async function checkWeatherOnce(): Promise<"rain_started" | "rain_stopped
   if (!enabled) return null;
   const coords = await resolveCoords();
   const current = await fetchCurrentWeather(coords.latitude, coords.longitude);
+  // Keep the launcher icon matched to the sky (sun / cloud / rain).
+  await setAppIcon(
+    iconForWeatherCode(current.weatherCode, isRaining(current))
+  );
   const prev = await loadEngine();
   const { next, event } = updateEngine(
     prev,
