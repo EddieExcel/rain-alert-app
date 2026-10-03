@@ -15,7 +15,7 @@
 import * as TaskManager from "expo-task-manager";
 import * as BackgroundFetch from "expo-background-fetch";
 import * as Location from "expo-location";
-import { fetchCurrentWeather, isRaining } from "./weather";
+import { fetchCurrentWeather, isRaining, estimateSpell } from "./weather";
 import { updateEngine } from "./engine";
 import {
   loadEnabled,
@@ -57,8 +57,10 @@ export async function checkWeatherOnce(): Promise<"rain_started" | "rain_stopped
     new Date().toISOString()
   );
   await saveEngine(next);
-  if (event === "rain_started") await notifyRainStarted();
-  else if (event === "rain_stopped") await notifyRainStopped();
+  if (event === "rain_started")
+    await notifyRainStarted(estimateSpell(current, true));
+  else if (event === "rain_stopped")
+    await notifyRainStopped(estimateSpell(current, false));
   return event;
 }
 

@@ -1,6 +1,7 @@
 import * as Notifications from "expo-notifications";
 import * as Speech from "expo-speech";
 import { Platform } from "react-native";
+import type { SpellEstimate } from "./weather";
 
 export const RAIN_STARTED_CHANNEL_ID = "rain-alerts-started";
 export const RAIN_STOPPED_CHANNEL_ID = "rain-alerts-stopped";
@@ -81,20 +82,35 @@ async function notifySpoken(
   });
 }
 
-export async function notifyRainStarted(): Promise<void> {
+/** Human-friendly duration for a spell estimate, e.g. "about 3 hours". */
+function formatDuration(est: SpellEstimate): string {
+  if (est.beyondForecast) return "more than 3 days";
+  if (est.hours <= 1) return "about an hour";
+  if (est.hours < 24) return `about ${est.hours} hours`;
+  if (est.hours < 48) return "about a day";
+  return `about ${Math.round(est.hours / 24)} days`;
+}
+
+export async function notifyRainStarted(est: SpellEstimate | null = null): Promise<void> {
+  const extra =
+    est && est.hours > 0 ? ` Expect ${formatDuration(est)} of rain.` : "";
   await notifySpoken(
     "It is raining",
-    "It is raining at your location.",
-    "It is raining.",
+    `It is raining at your location.${extra}`,
+    `It is raining.${extra}`,
     RAIN_STARTED_CHANNEL_ID
   );
 }
 
-export async function notifyRainStopped(): Promise<void> {
+export async function notifyRainStopped(est: SpellEstimate | null = null): Promise<void> {
+  const extra =
+    est && est.hours > 0
+      ? ` Should stay dry for ${formatDuration(est)}.`
+      : "";
   await notifySpoken(
     "It has stopped raining",
-    "It has stopped raining at your location.",
-    "It has stopped raining.",
+    `It has stopped raining at your location.${extra}`,
+    `It has stopped raining.${extra}`,
     RAIN_STOPPED_CHANNEL_ID
   );
 }
