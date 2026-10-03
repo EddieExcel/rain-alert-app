@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Platform,
   SafeAreaView,
   ScrollView,
+  StatusBar as RNStatusBar,
   StyleSheet,
   Switch,
   Text,
@@ -10,6 +12,11 @@ import {
   View,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
+
+/** Android draws edge-to-edge (RN's SafeAreaView is iOS-only), so pad the
+ *  root containers by the status-bar height to keep content below the
+ *  clock/icons. */
+const TOP_PAD = Platform.OS === "android" ? RNStatusBar.currentHeight ?? 0 : 0;
 import * as Application from "expo-application";
 import * as Location from "expo-location";
 import {
@@ -192,12 +199,13 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#0f2233" },
+  root: { flex: 1, backgroundColor: "#0f2233", paddingTop: TOP_PAD },
   center: {
     flex: 1,
     backgroundColor: "#0f2233",
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: TOP_PAD,
   },
   body: { padding: 20, gap: 14 },
   title: { color: "#fff", fontSize: 28, fontWeight: "700" },
